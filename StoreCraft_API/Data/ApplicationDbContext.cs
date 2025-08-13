@@ -3,14 +3,18 @@ using System.Collections.Generic;
 
 namespace StoreCraft_API.Data
 {
-    public class ApplicationDbContext : DbContext
-    {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-        }
+    //public class ApplicationDbContext : DbContext
+    //{
+    //    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    //    {
+    //    }
 
-        // Tables
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Category> Categories { get; set; }
+    //    // Tables
+    //    public DbSet<Product> Products { get; set; }
+    //    public DbSet<Category> Categories { get; set; }
+    public class ApplicationDbContext 
+    {
+       
     }
+    //}
 }

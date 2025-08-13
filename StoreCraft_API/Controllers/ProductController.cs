@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StoreCraft_API.Models.DTOs;
 using StoreCraft_API.Services;
 
 namespace StoreCraft_API.Controllers
