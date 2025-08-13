@@ -1,4 +1,5 @@
-﻿using StoreCraft_API.Models;
+﻿using AutoMapper;
+using StoreCraft_API.Models;
 using StoreCraft_API.Models.DTOs;
 using StoreCraft_API.Repository;
 
@@ -7,10 +8,12 @@ namespace StoreCraft_API.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, IMapper mapper)
         {
             _productRepository = productRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<ProductDTO>> GetAllProductsAsync()
@@ -49,36 +52,44 @@ namespace StoreCraft_API.Services
 
         public async Task<ProductDTO> CreateProductAsync(CreateProductDTO createProductDTO)
         {
-            var product = new Product
-            {
-                Id = createProductDTO.Id,
-                Name = createProductDTO.Name,
-                Description = createProductDTO.Description,
-                Price = createProductDTO.Price,
-                Stock = createProductDTO.Stock,
-                ImageUrl = createProductDTO.ImageUrl,
-                CategoryId = createProductDTO.CategoryId,
-                IsActive = true,
-                CreatedDate = DateTime.Now
-            };
+            //var product = new Product
+            //{
+            //    Name = createProductDTO.Name,
+            //    Description = createProductDTO.Description,
+            //    Price = createProductDTO.Price,
+            //    Stock = createProductDTO.Stock,
+            //    ImageUrl = createProductDTO.ImageUrl,
+            //    CategoryId = createProductDTO.CategoryId,
+            //    IsActive = true,
+            //    CreatedDate = DateTime.Now
+            //};
+
+            var product = _mapper.Map<Product>(createProductDTO);
 
             var createdProduct = await _productRepository.AddProductAsync(product);
 
-            // Get the product with category for DTO
             var productWithCategory = await _productRepository.GetProductByIdAsync(createdProduct.Id);
 
-            return new ProductDTO
+            if (productWithCategory == null)
             {
-                Id = productWithCategory!.Id,
-                Name = productWithCategory.Name,
-                Description = productWithCategory.Description,
-                Price = productWithCategory.Price,
-                Stock = productWithCategory.Stock,
-                ImageUrl = productWithCategory.ImageUrl,
-                CategoryName = productWithCategory.Category?.Name ?? "",
-                IsActive = productWithCategory.IsActive
-            };
+                throw new Exception($"Product with ID {createdProduct.Id} not found after creation.");
+            }
+            var productDto = _mapper.Map<ProductDTO>(productWithCategory);
+            return productDto;
+
+            //return new ProductDTO
+            //{
+            //    Id = productWithCategory.Id,
+            //    Name = productWithCategory.Name,
+            //    Description = productWithCategory.Description,
+            //    Price = productWithCategory.Price,
+            //    Stock = productWithCategory.Stock,
+            //    ImageUrl = productWithCategory.ImageUrl,
+            //    CategoryName = productWithCategory.Category?.Name ?? string.Empty,
+            //    IsActive = productWithCategory.IsActive
+            //};
         }
+
 
         public async Task<ProductDTO> UpdateProductAsync(int id, UpdateProductDTO updateProductDTO)
         {

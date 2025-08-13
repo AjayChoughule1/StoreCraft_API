@@ -12,8 +12,8 @@ using StoreCraft_API.Data;
 namespace StoreCraft_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250813131606_Initial")]
-    partial class Initial
+    [Migration("20250813134121_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
