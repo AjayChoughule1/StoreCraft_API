@@ -4,6 +4,7 @@ namespace StoreCraft_API.Models
 {
     public class Product
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -25,6 +26,6 @@ namespace StoreCraft_API.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         // Navigation property
-        public Category Category { get; set; } = null!;
+        public Category? Category { get; set; }
     }
 }

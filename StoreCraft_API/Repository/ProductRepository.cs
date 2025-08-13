@@ -1,4 +1,5 @@
-﻿using StoreCraft_API.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using StoreCraft_API.Data;
 using StoreCraft_API.Models;
 
 namespace StoreCraft_API.Repository
@@ -7,98 +8,58 @@ namespace StoreCraft_API.Repository
     {
         private readonly ApplicationDbContext _context;
 
-        public ProductRepository(ApplicationDbContext context)
+        public async Task<List<Product>> GetAllProductsAsync()
         {
-            _context = context;
+            return await _context.Products
+                .Include(p => p.Category)
+                .ToListAsync();
         }
 
-        public Task<Product> AddProductAsync(Product product)
+        public async Task<Product?> GetProductByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public Task<bool> DeleteProductAsync(int id)
+        public async Task<Product> AddProductAsync(Product product)
         {
-            throw new NotImplementedException();
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+            return product;
         }
 
-        public Task<List<Product>> GetActiveProductsAsync()
+        public async Task<Product> UpdateProductAsync(Product product)
         {
-            throw new NotImplementedException();
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+            return product;
         }
 
-        public Task<List<Product>> GetAllProductsAsync()
+        public async Task<bool> DeleteProductAsync(int id)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(id);
+            if (product == null) return false;
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public Task<Product?> GetProductByIdAsync(int id)
+        public async Task<List<Product>> GetActiveProductsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Products
+                .Include(p => p.Category)
+                .Where(p => p.IsActive)
+                .ToListAsync();
         }
 
-        public Task<List<Product>> SearchProductsAsync(string searchTerm)
+        public async Task<List<Product>> SearchProductsAsync(string searchTerm)
         {
-            throw new NotImplementedException();
+            return await _context.Products
+                .Include(p => p.Category)
+                .Where(p => p.Name.Contains(searchTerm) || p.Description.Contains(searchTerm))
+                .ToListAsync();
         }
-
-        public Task<Product> UpdateProductAsync(Product product)
-        {
-            throw new NotImplementedException();
-        }
-
-        //public async Task<List<Product>> GetAllProductsAsync()
-        //{
-        //    return await _context.Products
-        //        .Include(p => p.Category)
-        //        .ToListAsync();
-        //}
-
-        //public async Task<Product?> GetProductByIdAsync(int id)
-        //{
-        //    return await _context.Products
-        //        .Include(p => p.Category)
-        //        .FirstOrDefaultAsync(p => p.Id == id);
-        //}
-
-        //public async Task<Product> AddProductAsync(Product product)
-        //{
-        //    _context.Products.Add(product);
-        //    await _context.SaveChangesAsync();
-        //    return product;
-        //}
-
-        //public async Task<Product> UpdateProductAsync(Product product)
-        //{
-        //    _context.Products.Update(product);
-        //    await _context.SaveChangesAsync();
-        //    return product;
-        //}
-
-        //public async Task<bool> DeleteProductAsync(int id)
-        //{
-        //    var product = await _context.Products.FindAsync(id);
-        //    if (product == null) return false;
-
-        //    _context.Products.Remove(product);
-        //    await _context.SaveChangesAsync();
-        //    return true;
-        //}
-
-        //public async Task<List<Product>> GetActiveProductsAsync()
-        //{
-        //    return await _context.Products
-        //        .Include(p => p.Category)
-        //        .Where(p => p.IsActive)
-        //        .ToListAsync();
-        //}
-
-        //public async Task<List<Product>> SearchProductsAsync(string searchTerm)
-        //{
-        //    return await _context.Products
-        //        .Include(p => p.Category)
-        //        .Where(p => p.Name.Contains(searchTerm) || p.Description.Contains(searchTerm))
-        //        .ToListAsync();
-        //}
     }
 }

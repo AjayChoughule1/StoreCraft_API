@@ -51,6 +51,7 @@ namespace StoreCraft_API.Services
         {
             var product = new Product
             {
+                Id = createProductDTO.Id,
                 Name = createProductDTO.Name,
                 Description = createProductDTO.Description,
                 Price = createProductDTO.Price,

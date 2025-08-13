@@ -1,4 +1,6 @@
 
+using Microsoft.EntityFrameworkCore;
+using StoreCraft_API.Data;
 using StoreCraft_API.Repository;
 using StoreCraft_API.Services;
 
@@ -9,6 +11,9 @@ namespace StoreCraft_API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Add Repository and Service
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
