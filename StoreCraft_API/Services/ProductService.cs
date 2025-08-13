@@ -24,7 +24,7 @@ namespace StoreCraft_API.Services
                 Price = p.Price,
                 Stock = p.Stock,
                 ImageUrl = p.ImageUrl,
-                //CategoryName = p.Category?.Name ?? "",
+                CategoryName = p.Category?.Name ?? "",
                 IsActive = p.IsActive
             }).ToList();
         }
