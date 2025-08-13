@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using StoreCraft_API.Data;
+using StoreCraft_API.Helpers;
 using StoreCraft_API.Repository;
 using StoreCraft_API.Services;
 
@@ -18,12 +19,13 @@ namespace StoreCraft_API
             // Add Repository and Service
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen();           
 
             var app = builder.Build();
 
