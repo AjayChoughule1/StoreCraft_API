@@ -1,4 +1,7 @@
 
+using StoreCraft_API.Repository;
+using StoreCraft_API.Services;
+
 namespace StoreCraft_API
 {
     public class Program
@@ -7,7 +10,10 @@ namespace StoreCraft_API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Add Repository and Service
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
