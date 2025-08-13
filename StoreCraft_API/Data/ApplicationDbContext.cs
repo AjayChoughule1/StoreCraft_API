@@ -15,6 +15,7 @@ namespace StoreCraft_API.Data
     public class ApplicationDbContext 
     {
        
+
     }
     //}
 }
