@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace StoreCraft_API.Migrations
 {
     /// <inheritdoc />
-    public partial class First : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,6 +26,24 @@ namespace StoreCraft_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Thread = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Level = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Logger = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    Exception = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductLogs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,6 +72,16 @@ namespace StoreCraft_API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "Description", "IsActive", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Electronic items", true, "Electronics" },
+                    { 2, "Fashion items", true, "Clothing" },
+                    { 3, "Books and magazines", true, "Books" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
@@ -61,6 +91,9 @@ namespace StoreCraft_API.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ProductLogs");
+
             migrationBuilder.DropTable(
                 name: "Products");
 

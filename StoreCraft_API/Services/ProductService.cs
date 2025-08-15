@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using StoreCraft_API.Models;
-using StoreCraft_API.Models.DTOs;
+using StoreCraft_API.Models.DTOs.ProductDTOs;
 using StoreCraft_API.Repository;
 
 namespace StoreCraft_API.Services
@@ -19,75 +19,35 @@ namespace StoreCraft_API.Services
         public async Task<List<ProductDTO>> GetAllProductsAsync()
         {
             var products = await _productRepository.GetAllProductsAsync();
-            return products.Select(p => new ProductDTO
+            if (products == null || !products.Any())
             {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                Price = p.Price,
-                Stock = p.Stock,
-                ImageUrl = p.ImageUrl,
-                CategoryName = p.Category?.Name ?? "",
-                IsActive = p.IsActive
-            }).ToList();
+                return new List<ProductDTO>();
+            }
+            var productDto = _mapper.Map<List<ProductDTO>>(products);
+            return productDto;          
         }
 
         public async Task<ProductDTO?> GetProductByIdAsync(int id)
         {
             var product = await _productRepository.GetProductByIdAsync(id);
-            if (product == null) return null;
-
-            return new ProductDTO
+            if (product == null)
             {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                Stock = product.Stock,
-                ImageUrl = product.ImageUrl,
-                CategoryName = product.Category?.Name ?? "",
-                IsActive = product.IsActive
-            };
+                return null;
+            }
+            var productDto = _mapper.Map<ProductDTO>(product);
+            return productDto;
         }
 
         public async Task<ProductDTO> CreateProductAsync(CreateProductDTO createProductDTO)
-        {
-            //var product = new Product
-            //{
-            //    Name = createProductDTO.Name,
-            //    Description = createProductDTO.Description,
-            //    Price = createProductDTO.Price,
-            //    Stock = createProductDTO.Stock,
-            //    ImageUrl = createProductDTO.ImageUrl,
-            //    CategoryId = createProductDTO.CategoryId,
-            //    IsActive = true,
-            //    CreatedDate = DateTime.Now
-            //};
-
+        {          
             var product = _mapper.Map<Product>(createProductDTO);
 
             var createdProduct = await _productRepository.AddProductAsync(product);
 
             var productWithCategory = await _productRepository.GetProductByIdAsync(createdProduct.Id);
 
-            if (productWithCategory == null)
-            {
-                throw new Exception($"Product with ID {createdProduct.Id} not found after creation.");
-            }
             var productDto = _mapper.Map<ProductDTO>(productWithCategory);
             return productDto;
-
-            //return new ProductDTO
-            //{
-            //    Id = productWithCategory.Id,
-            //    Name = productWithCategory.Name,
-            //    Description = productWithCategory.Description,
-            //    Price = productWithCategory.Price,
-            //    Stock = productWithCategory.Stock,
-            //    ImageUrl = productWithCategory.ImageUrl,
-            //    CategoryName = productWithCategory.Category?.Name ?? string.Empty,
-            //    IsActive = productWithCategory.IsActive
-            //};
         }
 
 
@@ -96,29 +56,12 @@ namespace StoreCraft_API.Services
             var existingProduct = await _productRepository.GetProductByIdAsync(id);
             if (existingProduct == null)
                 throw new ArgumentException($"Product with ID {id} not found");
-
-            existingProduct.Name = updateProductDTO.Name;
-            existingProduct.Description = updateProductDTO.Description;
-            existingProduct.Price = updateProductDTO.Price;
-            existingProduct.Stock = updateProductDTO.Stock;
-            existingProduct.ImageUrl = updateProductDTO.ImageUrl;
-            existingProduct.CategoryId = updateProductDTO.CategoryId;
-            existingProduct.IsActive = updateProductDTO.IsActive;
+            _mapper.Map(updateProductDTO, existingProduct);
 
             var updatedProduct = await _productRepository.UpdateProductAsync(existingProduct);
             var productWithCategory = await _productRepository.GetProductByIdAsync(updatedProduct.Id);
 
-            return new ProductDTO
-            {
-                Id = productWithCategory!.Id,
-                Name = productWithCategory.Name,
-                Description = productWithCategory.Description,
-                Price = productWithCategory.Price,
-                Stock = productWithCategory.Stock,
-                ImageUrl = productWithCategory.ImageUrl,
-                CategoryName = productWithCategory.Category?.Name ?? "",
-                IsActive = productWithCategory.IsActive
-            };
+            return _mapper.Map<ProductDTO>(productWithCategory);
         }
 
         public async Task<bool> DeleteProductAsync(int id)
@@ -129,33 +72,13 @@ namespace StoreCraft_API.Services
         public async Task<List<ProductDTO>> GetActiveProductsAsync()
         {
             var products = await _productRepository.GetActiveProductsAsync();
-            return products.Select(p => new ProductDTO
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                Price = p.Price,
-                Stock = p.Stock,
-                ImageUrl = p.ImageUrl,
-                CategoryName = p.Category?.Name ?? "",
-                IsActive = p.IsActive
-            }).ToList();
+            return _mapper.Map<List<ProductDTO>>(products);           
         }
 
         public async Task<List<ProductDTO>> SearchProductsAsync(string searchTerm)
         {
             var products = await _productRepository.SearchProductsAsync(searchTerm);
-            return products.Select(p => new ProductDTO
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                Price = p.Price,
-                Stock = p.Stock,
-                ImageUrl = p.ImageUrl,
-                CategoryName = p.Category?.Name ?? "",
-                IsActive = p.IsActive
-            }).ToList();
+            return _mapper.Map<List<ProductDTO>>(products);           
         }
     }
 }
