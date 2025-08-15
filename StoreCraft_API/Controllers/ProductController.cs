@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using log4net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StoreCraft_API.Models.DTOs.ProductDTOs;
 using StoreCraft_API.Services;
+using System.Reflection;
 
 namespace StoreCraft_API.Controllers
 {
@@ -9,7 +12,6 @@ namespace StoreCraft_API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-
         public ProductController(IProductService productService)
         {
             _productService = productService;
@@ -35,6 +37,7 @@ namespace StoreCraft_API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult<ProductDTO>> CreateProduct(CreateProductDTO createProductDTO)
         {
             var product = await _productService.CreateProductAsync(createProductDTO);
@@ -42,6 +45,7 @@ namespace StoreCraft_API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult<ProductDTO>> UpdateProduct(int id, UpdateProductDTO updateProductDTO)
         {
             try
@@ -56,6 +60,7 @@ namespace StoreCraft_API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var result = await _productService.DeleteProductAsync(id);
