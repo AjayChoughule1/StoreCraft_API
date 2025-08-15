@@ -1,4 +1,4 @@
-﻿namespace StoreCraft_API.Models.DTOs
+﻿namespace StoreCraft_API.Models.DTOs.ProductDTOs
 {
     public class UpdateProductDTO
     {

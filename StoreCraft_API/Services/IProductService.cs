@@ -1,4 +1,4 @@
-﻿using StoreCraft_API.Models.DTOs;
+﻿using StoreCraft_API.Models.DTOs.ProductDTOs;
 
 namespace StoreCraft_API.Services
 {

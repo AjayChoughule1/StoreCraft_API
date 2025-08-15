@@ -13,7 +13,6 @@ namespace StoreCraft_API.Models
 
         public bool IsActive { get; set; } = true;
 
-        // Navigation property
         public List<Product> Products { get; set; } = new List<Product>();
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StoreCraft_API.Models.DTOs;
+using StoreCraft_API.Models.DTOs.ProductDTOs;
 using StoreCraft_API.Services;
 
 namespace StoreCraft_API.Controllers
@@ -15,15 +15,14 @@ namespace StoreCraft_API.Controllers
             _productService = productService;
         }
 
-        // GET: api/Product
         [HttpGet]
         public async Task<ActionResult<List<ProductDTO>>> GetAllProducts()
         {
+            //throw new Exception("Test exception from GetAllProducts");
             var products = await _productService.GetAllProductsAsync();
             return Ok(products);
         }
 
-        // GET: api/Product/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDTO>> GetProduct(int id)
         {
@@ -35,7 +34,6 @@ namespace StoreCraft_API.Controllers
             return Ok(product);
         }
 
-        // POST: api/Product
         [HttpPost]
         public async Task<ActionResult<ProductDTO>> CreateProduct(CreateProductDTO createProductDTO)
         {
@@ -43,7 +41,6 @@ namespace StoreCraft_API.Controllers
             return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
         }
 
-        // PUT: api/Product/5
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductDTO>> UpdateProduct(int id, UpdateProductDTO updateProductDTO)
         {
@@ -58,7 +55,6 @@ namespace StoreCraft_API.Controllers
             }
         }
 
-        // DELETE: api/Product/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
@@ -70,7 +66,6 @@ namespace StoreCraft_API.Controllers
             return NoContent();
         }
 
-        // GET: api/Product/active
         [HttpGet("active")]
         public async Task<ActionResult<List<ProductDTO>>> GetActiveProducts()
         {
@@ -78,7 +73,6 @@ namespace StoreCraft_API.Controllers
             return Ok(products);
         }
 
-        // GET: api/Product/search?term=laptop
         [HttpGet("search")]
         public async Task<ActionResult<List<ProductDTO>>> SearchProducts([FromQuery] string term)
         {
